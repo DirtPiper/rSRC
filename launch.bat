@@ -1,1 +1,1 @@
-RobloxApp.exe -script "rSRC_modules/main.lua"
+RobloxApp.exe -script print("dofile('rbxasset://rSRC_modules/main.lua')")
