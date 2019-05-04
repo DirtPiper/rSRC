@@ -13,7 +13,5 @@ player = game.Players:CreateLocalPlayer(0)
 player:LoadCharacter()
 rserv = game:GetService("RunService")
 rserv:Run()
---Workspace.Camera.CameraSubject = player.Humanoid
-
-
+Workspace.CurrentCamera.CameraSubject = player.Character.Humanoid
 
