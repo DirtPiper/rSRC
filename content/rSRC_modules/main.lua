@@ -13,13 +13,14 @@ rSRC.Parent = nil
 player = game.Players:CreateLocalPlayer(0)
 player:LoadCharacter()
 rserv = game:GetService("RunService")
+
 rserv:Run()
 fixed = false
 count = 0
 
 function counter(int)
 	if int == 5 then
-		rSRC.Parent = Workspace
+		rSRC.Parent = Workspace		
 	end
 end
 
