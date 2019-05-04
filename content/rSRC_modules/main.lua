@@ -14,7 +14,7 @@ rSRC_main[1].Parent = Workspace
 
 rserv = game:GetService("RunService")
 rserv:Run()
-game.Players:CreateLocalPlayer(0)
-game.Players.Player:LoadCharacter()
+player = game.Players:CreateLocalPlayer(0)
+player:LoadCharacter()
 
 
