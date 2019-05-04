@@ -1,7 +1,15 @@
---[[
+<roblox xmlns:xmime="http://www.w3.org/2005/05/xmlmime" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.roblox.com/roblox.xsd" version="4">
+	<External>null</External>
+	<External>nil</External>
+	<Item class="Script" referent="RBX0">
+		<Properties>
+			<bool name="Disabled">false</bool>
+			<Content name="LinkedSource"><null></null></Content>
+			<string name="Name">RayCasting</string>
+			<string name="Source">--[[
 	COMPATIBLE WITH rSRC
 	Originally made by RADIOAKTIIVINEN, altered slightly by DirtPiper to function in 2008.
-	to use: In any script, instantiate a RayCast like so: 'ray = RayCast(Vector3 Start, Vector3 Direction, Int Maximum, Int Minimum)' 
+	to use: In any script, instantiate a RayCast like so: &apos;ray = RayCast(Vector3 Start, Vector3 Direction, Int Maximum, Int Minimum)&apos; 
 	ray.Hit is the part that the ray hits (if any) and ray.Pos is the position that the ray hit the part.
 	
 	if your script uses raycasting and is not working consistently, try adding the following loop to the beginning:
@@ -15,10 +23,10 @@
 		local ray = Ray.new(Vector3 Start, Vector3 End)
 		local hit, pos, normal, mat = Workspace:FindPartOnRay(ray, ignore, true, false)
 
-	won't work, you have to change "Workspace:FindPartOnRay()" to "unpack(WorkspaceFindPartOnRay())".
+	won&apos;t work, you have to change &quot;Workspace:FindPartOnRay()&quot; to &quot;unpack(WorkspaceFindPartOnRay())&quot;.
 	luckily this can be done simply by pressing ctrl+H to find and replace anything that needs to be patched.
 
-	The current version will not actually return the normal, does not actually ignore things specified in "ignore", and always returns the material "Plastic".
+	The current version will not actually return the normal, does not actually ignore things specified in &quot;ignore&quot;, and always returns the material &quot;Plastic&quot;.
 
 	So, to use like modern Raycasting you must do
 
@@ -27,7 +35,7 @@
 
 	Enjoy!
 
-	In order to optimize rSRC, any parts that you want to be raycastable must be in a model in Workspace names "Brushes".
+	In order to optimize rSRC, any parts that you want to be raycastable must be in a model in Workspace names &quot;Brushes&quot;.
 ]]
 
 local parts={}
@@ -36,12 +44,12 @@ _G.Ray = {}
 
 
 function rootfindbricks(t,model)
-if model.className=="Model" or model.className=="Workspace" then
+if model.className==&quot;Model&quot; or model.className==&quot;Workspace&quot; then
 model.ChildAdded:connect(function(np) rootfindbricks(t,np) end)
 for i,v in pairs(model:GetChildren()) do
 rootfindbricks(t,v)
 end
-elseif model.className == "Part" then
+elseif model.className == &quot;Part&quot; then
 t[#t+1]=model
 end
 end
@@ -73,7 +81,7 @@ function _G.WorkspaceFindPartOnRay(ray, ignore, a)
 end
 
 function _G.WorkspaceFindPartOnRay(ray, ignore, a, b)
-	return {ray.Hit, ray.Pos, Vector3.new(0, 0, 0), "Plastic"}
+	return {ray.Hit, ray.Pos, Vector3.new(0, 0, 0), &quot;Plastic&quot;}
 end
 
 function _G.Ray.new(Start, Dir)
@@ -91,8 +99,8 @@ if v.Parent~=nil then
 local smd=v.Size.magnitude/2+Accuracy
 local tm=(v.Position-Start).magnitude
 local dc=(v.Position-Start)*Dir
-if tm-smd<=(Pos-Start).magnitude and math.min(((tm*Dir)-v.Position+Start).magnitude*0.7,tm)<=smd then
-if tm-smd<=MaxRange and (v:GetMass()>5 or tm>=MinRange) and (v.CanCollide==true or v.Parent:FindFirstChild("Humanoid")~=nil) and v.Name ~= "Hull" then
+if tm-smd&lt;=(Pos-Start).magnitude and math.min(((tm*Dir)-v.Position+Start).magnitude*0.7,tm)&lt;=smd then
+if tm-smd&lt;=MaxRange and (v:GetMass()&gt;5 or tm&gt;=MinRange) and (v.CanCollide==true or v.Parent:FindFirstChild(&quot;Humanoid&quot;)~=nil) and v.Name ~= &quot;Hull&quot; then
 local Convert=v.CFrame:pointToObjectSpace(Start) ---UR MOM
 local RConvert=nil
 local DirC=v.CFrame:pointToObjectSpace(v.Position+Dir)
@@ -107,17 +115,17 @@ local TCS=(MCon-DSize)/MDirC
 
 Temp=Convert+TCS.x*DirC
 TempA=Temp/DSize
-if MCon.x>=DSize.x and math.abs(TempA.x)<=1.2 and math.abs(TempA.y)<=1.2 and math.abs(TempA.z)<=1.2 then
+if MCon.x&gt;=DSize.x and math.abs(TempA.x)&lt;=1.2 and math.abs(TempA.y)&lt;=1.2 and math.abs(TempA.z)&lt;=1.2 then
 Result=true
 else
 Temp=Convert+TCS.y*DirC
 TempA=Temp/DSize
-if MCon.y>=DSize.y and math.abs(TempA.x)<=1.2 and math.abs(TempA.y)<=1.2 and math.abs(TempA.z)<=1.2 then
+if MCon.y&gt;=DSize.y and math.abs(TempA.x)&lt;=1.2 and math.abs(TempA.y)&lt;=1.2 and math.abs(TempA.z)&lt;=1.2 then
 Result=true
 else
 Temp=Convert+TCS.z*DirC ----NO U
 TempA=Temp/DSize
-if MCon.z>=DSize.z and math.abs(TempA.x)<=1.2 and math.abs(TempA.y)<=1.2 and math.abs(TempA.z)<=1.2 then
+if MCon.z&gt;=DSize.z and math.abs(TempA.x)&lt;=1.2 and math.abs(TempA.y)&lt;=1.2 and math.abs(TempA.z)&lt;=1.2 then
 Result=true
 end
 end
@@ -125,7 +133,7 @@ end
 
 if Result==true then
 RConvert=v.CFrame:pointToWorldSpace(Temp)
-if (Start-Pos).magnitude>=(Start-RConvert).magnitude then
+if (Start-Pos).magnitude&gt;=(Start-RConvert).magnitude then
 Pos=RConvert
 HitPart=v
 end
@@ -154,3 +162,15 @@ script.loaded.Value = true
 ----PWEES CREDIT IF YOU USE THIS IN YOUR WORK OR I OMNOMNOM j00
 
 
+</string>
+			<bool name="archivable">true</bool>
+		</Properties>
+		<Item class="BoolValue" referent="RBX1">
+			<Properties>
+				<string name="Name">loaded</string>
+				<bool name="Value">false</bool>
+				<bool name="archivable">true</bool>
+			</Properties>
+		</Item>
+	</Item>
+</roblox>

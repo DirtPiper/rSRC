@@ -1,0 +1,236 @@
+<roblox xmlns:xmime="http://www.w3.org/2005/05/xmlmime" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.roblox.com/roblox.xsd" version="4">
+	<External>null</External>
+	<External>nil</External>
+	<Item class="BoolValue" referent="RBX0">
+		<Properties>
+			<string name="Name">Button1Down</string>
+			<bool name="Value">false</bool>
+			<bool name="archivable">true</bool>
+		</Properties>
+	</Item>
+	<Item class="HopperBin" referent="RBX1">
+		<Properties>
+			<token name="BinType">0</token>
+			<string name="Name">Play</string>
+			<Content name="TextureId"><null></null></Content>
+			<bool name="archivable">true</bool>
+		</Properties>
+		<Item class="LocalScript" referent="RBX2">
+			<Properties>
+				<bool name="Disabled">false</bool>
+				<Content name="LinkedSource"><null></null></Content>
+				<string name="Name">ConnectionScript</string>
+				<string name="Source">function onSelected(mouse)
+	--[[local m = Instance.new(&quot;CFrameValue&quot;)
+	m.Parent = script.Parent.Parent.Parent
+	m.Name = &quot;MouseCFrame&quot;
+	local b = Instance.new(&quot;BoolValue&quot;)
+	b.Parent = script.Parent.Parent.Parent
+	b.Name = &quot;Button1Down&quot;
+	local k = Instance.new(&quot;StringValue&quot;)
+	k.Parent = script.Parent.Parent.Parent
+	k.Name = &quot;KeyPressed&quot;
+	local t = Instance.new(&quot;ObjectValue&quot;)
+	t.Parent = script.Parent.Parent.Parent
+	t.Name = &quot;MouseTarget&quot;
+	local w = Instance.new(&quot;NumberValue&quot;)
+	w.Parent = script.Parent.Parent.Parent
+	w.Name = &quot;CurrentWeapon&quot;
+	w.Value = 1]]
+	local m = script.Parent.Parent.MouseCFrame
+	local b = script.Parent.Parent.Button1Down
+	local k = script.Parent.Parent.KeyPressed
+	local t = script.Parent.Parent.MouseTarget
+	local w = script.Parent.Parent.CurrentWeapon
+	mouse.Move:connect(function() m.Value = mouse.Hit end)
+	mouse.Button1Down:connect(function() b.Value = true end)
+	mouse.Button1Up:connect(function() b.Value = false end)
+	mouse.KeyDown:connect(function(key) k.Value = key k.Value = &quot;&quot; end)
+	mouse.Changed:connect(function(property)
+		if (property == &quot;Target&quot;) then
+			t.Value = mouse.Target
+		end
+	end)
+	local hb = script.Parent
+	script.Parent = hb.Parent
+	hb.ControlScript.Parent = script.Parent
+	hb.WeaponScript.Parent = script.Parent
+	hb:remove()
+end
+ 
+script.Parent.Selected:connect(onSelected)</string>
+				<bool name="archivable">true</bool>
+			</Properties>
+		</Item>
+		<Item class="LocalScript" referent="RBX3">
+			<Properties>
+				<bool name="Disabled">false</bool>
+				<Content name="LinkedSource"><null></null></Content>
+				<string name="Name">ControlScript</string>
+				<string name="Source">currWep = 1
+prevWep = 2
+hold = 0
+isPaused = false
+
+while true do
+	if script.Parent.Name == &quot;Backpack&quot; then  -- this is to pause the script until it gets moved, no bugging up.
+		break -- this stops the while loop. &apos;breaking&apos; it
+	end
+	wait()
+end
+ 
+--viewModel = Workspace.CurrentCamera.viewModel
+
+function newText(text)
+	local nm = Instance.new(&quot;Hint&quot;)
+	nm.Parent = game.Players.LocalPlayer
+	nm.Text = text
+end
+ 
+function onKeyDown(key)
+	if script.Parent.Parent.Character==nil then return end
+	local key = string.lower(key)
+	if key == &quot;1&quot; then print (&quot;switching to primary weapon&quot;); prevWep = currWep; currWep = 1;  end
+	if key == &quot;2&quot; then print (&quot;switching to secondary weapon&quot;); prevWep = currWep; currWep = 2; end
+	if key == &quot;3&quot; then print (&quot;switching to melee weapon&quot;); prevWep = currWep; currWep = 3; end
+	if key == &quot;q&quot; then hold = currWep currWep = prevWep prevWep = hold print(&quot;switching to previous weapon: &quot;..currWep) end
+	if string.byte(key) == 27 and isPaused == false then game[&quot;Run Service&quot;]:Pause(); isPaused = true; end
+	if string.byte(key) == 27 and isPaused == true then game[&quot;Run Service&quot;]:Run(); isPaused = false; end
+	script.Parent.CurrentWeapon.Value = currWep
+	--viewModel.Transparency = (currWep / 10) - .1
+end
+ 
+function onButton1Down()
+	if script.Parent.Parent.Character==nil then return end		
+end
+ 
+function onButton1Up()
+	if script.Parent.Parent.Character==nil then return end
+end
+ 
+function onMove()
+	if script.Parent.Parent.Character==nil then return end
+	--script.Parent.Parent.Character.Humanoid.viewModel.mousePos.Value = script.Parent.Parent.MouseCFrame.Value - script.Parent.Parent.MouseCFrame.Value.p
+end
+ 
+script.Parent.KeyPressed.Changed:connect(function() onKeyDown(script.Parent.KeyPressed.Value) end)
+script.Parent.MouseCFrame.Changed:connect(function() onMove() end)
+script.Parent.Button1Down.Changed:connect(function() 
+	if script.Parent.Button1Down.Value == true then 
+		onButton1Down() 
+	else
+		onButton1Up()
+	end
+end)</string>
+				<bool name="archivable">true</bool>
+			</Properties>
+		</Item>
+		<Item class="LocalScript" referent="RBX4">
+			<Properties>
+				<bool name="Disabled">true</bool>
+				<Content name="LinkedSource"><null></null></Content>
+				<string name="Name">WeaponScript</string>
+				<string name="Source">while true do
+	if script.Parent.Name == &quot;Backpack&quot; then  -- this is to pause the script until it gets moved, no bugging up.
+		break -- this stops the while loop. &apos;breaking&apos; it
+	end
+	wait()
+end
+
+currWep = script.Parent.CurrentWeapon
+hit = script.Parent.MouseCFrame
+firing = false
+
+function computeDirection(vec)
+	local lenSquared = vec.magnitude * vec.magnitude
+	local invSqrt = 1 / math.sqrt(lenSquared)
+	return Vector3.new(vec.x * invSqrt, vec.y * invSqrt, vec.z * invSqrt)
+end
+
+function Primary()
+	p = Instance.new(&quot;Part&quot;)
+	dir = computeDirection(hit.Value.p)
+	p.Position = script.Parent.Parent.Character.Head.Position + dir * 7
+	p.Velocity = script.Parent.Parent.Character.Head.Velocity + dir * 120
+	p.Parent = game.Workspace
+	game:GetService(&quot;Debris&quot;):AddItem(p, 5)
+end
+
+function Secondary()
+	explosion = Instance.new(&quot;Explosion&quot;, game.Workspace)
+	explosion.Position = hit.Value.p
+	explosion.BlastRadius = 7
+	explosion.BlastPressure = 0--500000
+end
+
+function Melee()
+
+end
+
+function onButton1Down()
+	firing = true
+	while firing == true do
+		if currWep.Value == 1 then Primary() end
+		if currWep.Value == 2 then Secondary() end
+		if currWep.Value == 3 then Melee() end
+		wait(.1)
+	end
+end
+
+function onButton1Up()
+	firing = false
+end
+
+script.Parent.Button1Down.Changed:connect(function() 
+	if script.Parent.Button1Down.Value == true then 
+		onButton1Down() 
+	else
+		onButton1Up()
+	end
+end)</string>
+				<bool name="archivable">true</bool>
+			</Properties>
+		</Item>
+	</Item>
+	<Item class="NumberValue" referent="RBX5">
+		<Properties>
+			<string name="Name">CurrentWeapon</string>
+			<double name="Value">1</double>
+			<bool name="archivable">true</bool>
+		</Properties>
+	</Item>
+	<Item class="StringValue" referent="RBX6">
+		<Properties>
+			<string name="Name">KeyPressed</string>
+			<string name="Value"></string>
+			<bool name="archivable">true</bool>
+		</Properties>
+	</Item>
+	<Item class="CFrameValue" referent="RBX7">
+		<Properties>
+			<string name="Name">MouseCFrame</string>
+			<CoordinateFrame name="Value">
+				<X>5963.56934</X>
+				<Y>-1552.09607</Y>
+				<Z>-7836.73779</Z>
+				<R00>0.797465026</R00>
+				<R01>0.094535768</R01>
+				<R02>-0.595913172</R02>
+				<R10>3.64926223e-009</R10>
+				<R11>0.987649262</R11>
+				<R12>0.156680867</R12>
+				<R20>0.603365123</R20>
+				<R21>-0.124947511</R21>
+				<R22>0.787615776</R22>
+			</CoordinateFrame>
+			<bool name="archivable">true</bool>
+		</Properties>
+	</Item>
+	<Item class="ObjectValue" referent="RBX8">
+		<Properties>
+			<string name="Name">MouseTarget</string>
+			<Ref name="Value">null</Ref>
+			<bool name="archivable">true</bool>
+		</Properties>
+	</Item>
+</roblox>

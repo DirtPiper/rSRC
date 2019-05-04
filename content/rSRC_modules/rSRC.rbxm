@@ -1,13 +1,21 @@
---[[ 
+<roblox xmlns:xmime="http://www.w3.org/2005/05/xmlmime" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.roblox.com/roblox.xsd" version="4">
+	<External>null</External>
+	<External>nil</External>
+	<Item class="Script" referent="RBX0">
+		<Properties>
+			<bool name="Disabled">false</bool>
+			<Content name="LinkedSource"><null></null></Content>
+			<string name="Name">rSRC</string>
+			<string name="Source">--[[ 
 	This is an early consolidated build of rSRC, made so that all needed code for rSRC is together in one place. ENTER THIS HELLHOLE
 	AT YOUR OWN RISK.
 
 	REQUIREMENTS:
 		This Script
 		RayCasting module (should specify that it is compatible with rSRC)
-		Model parented to Workspace named 'Brushes' containing all parts you want the player to be able to walk on
-		Model parented to Workspace named 'rSRC_Modules' containing valid rSRC_Modules (there will be a template or tutorial available)
-		'Play' Hopperbin parented to StarterPack containting ConnectionScript, ControlScript, and WeaponScript
+		Model parented to Workspace named &apos;Brushes&apos; containing all parts you want the player to be able to walk on
+		Model parented to Workspace named &apos;rSRC_Modules&apos; containing valid rSRC_Modules (there will be a template or tutorial available)
+		&apos;Play&apos; Hopperbin parented to StarterPack containting ConnectionScript, ControlScript, and WeaponScript
 
 	rSRC DOES NOT WORK WITH MULTIPLAYER. THIS IS INTENDED PURELY FOR SINGLEPLAYER GAMES MADE WITH THE DECEMBER 17
 	2008 CLIENT.
@@ -19,7 +27,7 @@
 		Raycasting
 		Collision-hulls
 		Movement
-		Airstrafing & Bunnyhopping
+		Airstrafing &amp; Bunnyhopping
 		Viewmodels (currently being redone)
 		Brush-based maps
 		Raycasting optimization
@@ -39,11 +47,11 @@ while game.Workspace.RayCasting.loaded.Value == false do  --Waits for the RayCas
 end
 
 rSRC_Modules = script.Parent.rSRC_Modules:GetChildren()
-keybinds = {["q"] = nil, ["e"] = nil, ["r"] = nil, ["t"] = nil, ["y"] = nil, ["u"] = nil, ["p"] = nil, ["f"] = nil, ["g"] = nil, ["h"] = nil, ["j"] = nil, ["k"] = nil, ["l"] = nil, ["z"] = nil, ["x"] = nil, ["c"] = nil, ["v"] = nil, ["b"] = nil, ["n"] = nil, ["m"] = nil, }
+keybinds = {[&quot;q&quot;] = nil, [&quot;e&quot;] = nil, [&quot;r&quot;] = nil, [&quot;t&quot;] = nil, [&quot;y&quot;] = nil, [&quot;u&quot;] = nil, [&quot;p&quot;] = nil, [&quot;f&quot;] = nil, [&quot;g&quot;] = nil, [&quot;h&quot;] = nil, [&quot;j&quot;] = nil, [&quot;k&quot;] = nil, [&quot;l&quot;] = nil, [&quot;z&quot;] = nil, [&quot;x&quot;] = nil, [&quot;c&quot;] = nil, [&quot;v&quot;] = nil, [&quot;b&quot;] = nil, [&quot;n&quot;] = nil, [&quot;m&quot;] = nil, }
 weapons = {nil, nil, nil, nil, nil, nil, nil, nil, nil, nil}
 
-Hull = nil								--The player's collision hull
-Humanoid = nil						--The player's Humanoid
+Hull = nil								--The player&apos;s collision hull
+Humanoid = nil						--The player&apos;s Humanoid
 movePos = nil							--A bodymover used when airstrafing
 moveVel = nil							--A bodymover used when airstrafing
 camera = game.Workspace.CurrentCamera 	--The current camera (might have to move to a localscript for multiplayer)
@@ -56,58 +64,58 @@ airMaxSpeed = 5						--Maximum velocity when airstrafing
 isInAir = nil							--Are we airborne?
 canJump = nil							--Can we jump?
 HullMade = false						--Has a Hull been generated?
-fp1 = Instance.new("Message")			--These messages are used for the zoomout warning
-fp2 = Instance.new("Message")
-fp3 = Instance.new("Message")
-fp4 = Instance.new("Message")
-fp5 = Instance.new("Message")
-fp6 = Instance.new("Message")
-fp7 = Instance.new("Message")
+fp1 = Instance.new(&quot;Message&quot;)			--These messages are used for the zoomout warning
+fp2 = Instance.new(&quot;Message&quot;)
+fp3 = Instance.new(&quot;Message&quot;)
+fp4 = Instance.new(&quot;Message&quot;)
+fp5 = Instance.new(&quot;Message&quot;)
+fp6 = Instance.new(&quot;Message&quot;)
+fp7 = Instance.new(&quot;Message&quot;)
 Button1Down = nil
 KeyPressed = nil
 MouseCFrame = nil
 MouseTarget = nil
 
 function makeHull(player)							--Give the player a collision hull
-	Container = Instance.new("Model")				--Container model for the Hull
+	Container = Instance.new(&quot;Model&quot;)				--Container model for the Hull
 	Container.Name = player.Name					--Needed for the Player to be able to control the Hull
-	Container.Controller = "Player"
-	Hull = Instance.new("Part", Container)				--BodyHull
+	Container.Controller = &quot;Player&quot;
+	Hull = Instance.new(&quot;Part&quot;, Container)				--BodyHull
 	Hull.Size = Vector3.new(3, 7.2, 3)
-	Hull.BottomSurface = "Smooth"
-	Hull.TopSurface = "Smooth"
+	Hull.BottomSurface = &quot;Smooth&quot;
+	Hull.TopSurface = &quot;Smooth&quot;
 	Hull.Friction = 0
 	Hull.Elasticity = 0
-	bg = Instance.new("BodyGyro", Hull)				--BodyMovers used later on  for moving the Player around
-	bv = Instance.new("BodyVelocity", Hull)
-	movePos = Instance.new("BodyPosition", Hull)
-	movePos.Name = "MovePos"
-	moveVel = Instance.new("BodyVelocity", Hull)
-	moveVel.Name = "MoveVel"
-	Humanoid = Instance.new("Humanoid", Container)
-	canJump = Instance.new("BoolValue", Humanoid)		--BoolValues used when the Player jumps
-	canJump.Name = "canJump"
-	isInAir = Instance.new("BoolValue", Humanoid)
-	isInAir.Name = "isInAir"
-	head = Instance.new("Part", Container)				--The Player's head
+	bg = Instance.new(&quot;BodyGyro&quot;, Hull)				--BodyMovers used later on  for moving the Player around
+	bv = Instance.new(&quot;BodyVelocity&quot;, Hull)
+	movePos = Instance.new(&quot;BodyPosition&quot;, Hull)
+	movePos.Name = &quot;MovePos&quot;
+	moveVel = Instance.new(&quot;BodyVelocity&quot;, Hull)
+	moveVel.Name = &quot;MoveVel&quot;
+	Humanoid = Instance.new(&quot;Humanoid&quot;, Container)
+	canJump = Instance.new(&quot;BoolValue&quot;, Humanoid)		--BoolValues used when the Player jumps
+	canJump.Name = &quot;canJump&quot;
+	isInAir = Instance.new(&quot;BoolValue&quot;, Humanoid)
+	isInAir.Name = &quot;isInAir&quot;
+	head = Instance.new(&quot;Part&quot;, Container)				--The Player&apos;s head
 	head.CFrame = CFrame.new(Hull.CFrame.p)
-	head.Name = "Head"
+	head.Name = &quot;Head&quot;
 	--head.Transparency = 1
 	head.Size = Vector3.new(1, 1.2, 1)
 	head.Elasticity = 0
-	srcGrav = Instance.new("BodyForce", Hull)			--Emulates the gravity of the Source Engine
-	srcGrav.Name = "SrcGrav"
+	srcGrav = Instance.new(&quot;BodyForce&quot;, Hull)			--Emulates the gravity of the Source Engine
+	srcGrav.Name = &quot;SrcGrav&quot;
 	srcGrav.force = Vector3.new(0, 7840.64, 0)
 	Container.Parent = game.Workspace
-	neck = Instance.new("Weld", head)				--Attaches the Head to the BodyHull
+	neck = Instance.new(&quot;Weld&quot;, head)				--Attaches the Head to the BodyHull
 	neck.Part0 = head
 	neck.Part1 = Hull
 	neck.C0 = CFrame.new(0, -2.8, 0)
 	Hull.CFrame = CFrame.new(player.Character.Torso.Position)
 	Humanoid.Health = Humanoid.MaxHealth
-	Hull.Name = "Torso"
+	Hull.Name = &quot;Torso&quot;
 	camera.CameraSubject = Humanoid
-	player.Character = Container						--Replaces the Player's default character with the Hull
+	player.Character = Container						--Replaces the Player&apos;s default character with the Hull
 	Humanoid.Health = Humanoid.MaxHealth
 	HullMade = true
 	Button1Down = player.Backpack.Button1Down
@@ -116,9 +124,9 @@ function makeHull(player)							--Give the player a collision hull
 	MouseTarget = player.Backpack.MouseTarget
 end
 
-local h = game.Workspace:GetChildren()				--This does something. Don't fuck with it.
+local h = game.Workspace:GetChildren()				--This does something. Don&apos;t fuck with it.
 for i=1, #h do
-	if h[i].className == "Camera" then
+	if h[i].className == &quot;Camera&quot; then
 		if h[i].CameraSubject == Humanoid then
 			camera = h[i]
 		end
@@ -155,7 +163,7 @@ function getMovementVelocity(prevVelocity, accelerate, maxVelocity) --The veloci
 	dt = updateDT
 	local accelVel = accelerate * dt;
 	
-	if (projVel + accelVel > maxVelocity) then
+	if (projVel + accelVel &gt; maxVelocity) then
 		accelVel = math.max(maxVelocity - projVel, 0);
 	end
 	
@@ -182,7 +190,7 @@ function updateMoveInputSum()  --Front/Back and Left/Right movement.
 	moveInputSumside = -moveValue.x
 end
 
-function avg(v) --For finding the average of a Vector3. I don't think I actually used it here.
+function avg(v) --For finding the average of a Vector3. I don&apos;t think I actually used it here.
 	return (math.abs(v.x) + math.abs(v.y) + math.abs(v.z))/3
 end
 
@@ -205,22 +213,22 @@ function onStep()
 			collider = Hull
 			moveValue = getYaw():vectorToObjectSpace(Humanoid.WalkDirection) --This converts the WalkDirection from World Coords to Object Coords
 			updateMoveInputSum()
-			if (camera.CoordinateFrame.p - camera.Focus.p).magnitude > 2.4 then
-				fp1.Text = "Camera too far out!"
-				fp2.Text = "Camera too far out!"
-				fp3.Text = "Camera too far out!"
-				fp4.Text = "Camera too far out!"
-				fp5.Text = "Camera too far out!"
-				fp6.Text = "Camera too far out!"
-				fp7.Text = "Camera too far out!"
+			if (camera.CoordinateFrame.p - camera.Focus.p).magnitude &gt; 2.4 then
+				fp1.Text = &quot;Camera too far out!&quot;
+				fp2.Text = &quot;Camera too far out!&quot;
+				fp3.Text = &quot;Camera too far out!&quot;
+				fp4.Text = &quot;Camera too far out!&quot;
+				fp5.Text = &quot;Camera too far out!&quot;
+				fp6.Text = &quot;Camera too far out!&quot;
+				fp7.Text = &quot;Camera too far out!&quot;
 			else
-				fp1.Text = ""
-				fp2.Text = ""
-				fp3.Text = ""
-				fp4.Text = ""
-				fp5.Text = ""
-				fp6.Text = ""
-				fp7.Text = ""
+				fp1.Text = &quot;&quot;
+				fp2.Text = &quot;&quot;
+				fp3.Text = &quot;&quot;
+				fp4.Text = &quot;&quot;
+				fp5.Text = &quot;&quot;
+				fp6.Text = &quot;&quot;
+				fp7.Text = &quot;&quot;
 			end
 			local adjustedMoveValue = moveValue
 			local ray1 = Ray.new(Hull.Position + Vector3.new(0, 0, 0), Vector3.new(0,-3.9,0)) --These rays test to see if the Hull is on the ground
@@ -270,7 +278,7 @@ end
 function init_modules()
 	for i, v in pairs(rSRC_Modules) do
 		print(i, v.Name)
-		if string.sub(v.Name, 1, 3) == "ACT" then
+		if string.sub(v.Name, 1, 3) == &quot;ACT&quot; then
 			keybinds[v.KEYBIND.Value] = v
 		end
 	end
@@ -284,7 +292,7 @@ function onKeyPressed(key)
 end
 
 function respawn(player)
-	if player.Character:FindFirstChild("Torso") ~= nil then
+	if player.Character:FindFirstChild(&quot;Torso&quot;) ~= nil then
 		makeHull(player)
 	end
 end
@@ -302,5 +310,9 @@ end
 
 init_modules()
 game.Players.PlayerAdded:connect(onPlayerAdded)
-game["Run Service"].Stepped:connect(onStep)
-KeyPressed.Changed:connect(onKeyPressed)
+game[&quot;Run Service&quot;].Stepped:connect(onStep)
+KeyPressed.Changed:connect(onKeyPressed)</string>
+			<bool name="archivable">true</bool>
+		</Properties>
+	</Item>
+</roblox>
