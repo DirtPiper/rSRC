@@ -8,10 +8,10 @@ playbin[6].Parent = game.StarterPack
 rSRC_modules = game:GetObjects("rbxasset://rSRC_modules/modules.rbxm")
 rSRC_modules[1].Parent = Workspace
 rSRC_main = game:GetObjects("rbxasset://rSRC_modules/rSRC_merged.rbxm")
-rSRC_main[1].Parent = Workspace
 player = game.Players:CreateLocalPlayer(0)
 player:LoadCharacter()
 rserv = game:GetService("RunService")
 rserv:Run()
+rSRC_main[1].Parent = Workspace
 Workspace.CurrentCamera.CameraSubject = player.Character.Humanoid
 

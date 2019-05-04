@@ -184,16 +184,53 @@ MouseCFrame = nil
 MouseTarget = nil
 
 function makeHull(player)							--Give the player a collision hull
-	Hull = player.Character.Torso
-	Humanoid = player.Character.Humanoid
-	isInAir = Humanoid.isInAir
-	canJump = Humanoid.canJump
+	Container = Instance.new("Model")				--Container model for the Hull
+	Container.Name = player.Name					--Needed for the Player to be able to control the Hull
+	Container.Controller = "Player"
+	Hull = Instance.new("Part", Container)				--BodyHull
+	Hull.Size = Vector3.new(3, 7.2, 3)
+	Hull.BottomSurface = "Smooth"
+	Hull.TopSurface = "Smooth"
+	Hull.Friction = 0
+	Hull.Elasticity = 0
+	bg = Instance.new("BodyGyro", Hull)				--BodyMovers used later on  for moving the Player around
+	bv = Instance.new("BodyVelocity", Hull)
+	movePos = Instance.new("BodyPosition", Hull)
+	movePos.Name = "MovePos"
+	moveVel = Instance.new("BodyVelocity", Hull)
+	moveVel.Name = "MoveVel"
+	Humanoid = Instance.new("Humanoid", Container)
+	canJump = Instance.new("BoolValue", Humanoid)		--BoolValues used when the Player jumps
+	canJump.Name = "canJump"
+	isInAir = Instance.new("BoolValue", Humanoid)
+	isInAir.Name = "isInAir"
+	head = Instance.new("Part", Container)				--The Player's head
+	head.CFrame = CFrame.new(Hull.CFrame.p)
+	head.Name = "Head"
+	--head.Transparency = 1
+	head.Size = Vector3.new(1, 1.2, 1)
+	head.Elasticity = 0
+	srcGrav = Instance.new("BodyForce", Hull)			--Emulates the gravity of the Source Engine
+	srcGrav.Name = "SrcGrav"
+	srcGrav.force = Vector3.new(0, 7840.64, 0)
+	Container.Parent = game.Workspace
+	neck = Instance.new("Weld", head)				--Attaches the Head to the BodyHull
+	neck.Part0 = head
+	neck.Part1 = Hull
+	neck.C0 = CFrame.new(0, -2.8, 0)
+	Hull.CFrame = CFrame.new(player.Character.Torso.Position)
+	Humanoid.Health = Humanoid.MaxHealth
+	Hull.Name = "Torso"
+	camera.CameraSubject = Humanoid
+	player.Character = Container						--Replaces the Player's default character with the Hull
+	Humanoid.Health = Humanoid.MaxHealth
 	HullMade = true
 	Button1Down = player.Backpack.Button1Down
 	KeyPressed = player.Backpack.KeyPressed
 	MouseCFrame = player.Backpack.MouseCFrame
 	MouseTarget = player.Backpack.MouseTarget
 end
+
 
 local h = game.Workspace:GetChildren()				--This does something. Don&apos;t fuck with it.
 for i=1, #h do
@@ -379,6 +416,7 @@ for i = 1, #numPlay do
 	onPlayerAdded(numPlay[i])
 end
 
+onPlayerAdded(game.Players.Player)
 init_modules()
 game.Players.PlayerAdded:connect(onPlayerAdded)
 game[&quot;Run Service&quot;].Stepped:connect(onStep)
