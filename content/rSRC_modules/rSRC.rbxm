@@ -77,7 +77,7 @@ MouseCFrame = nil
 MouseTarget = nil
 
 function makeHull(player)							--Give the player a collision hull
-	Container = Instance.new(&quot;Model&quot;)				--Container model for the Hull
+	--[[Container = Instance.new(&quot;Model&quot;)				--Container model for the Hull
 	Container.Name = player.Name					--Needed for the Player to be able to control the Hull
 	Container.Controller = &quot;Player&quot;
 	Hull = Instance.new(&quot;Part&quot;, Container)				--BodyHull
@@ -116,8 +116,12 @@ function makeHull(player)							--Give the player a collision hull
 	Hull.Name = &quot;Torso&quot;
 	camera.CameraSubject = Humanoid
 	player.Character = Container						--Replaces the Player&apos;s default character with the Hull
-	Humanoid.Health = Humanoid.MaxHealth
+	Humanoid.Health = Humanoid.MaxHealth]]
+	Hull = player.Character.Torso
+	Humanoid = player.Character.Humanoid
 	HullMade = true
+	isInAir = player.Character.Humanoid.isInAir
+	canJump = player.Character.Humanoid.canJump
 	Button1Down = player.Backpack.Button1Down
 	KeyPressed = player.Backpack.KeyPressed
 	MouseCFrame = player.Backpack.MouseCFrame
