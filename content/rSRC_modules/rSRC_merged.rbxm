@@ -154,8 +154,9 @@ end
 parts = GetParts()
 
 rSRC_Modules = script.Parent.rSRC_Modules:GetChildren()
-keybinds = {[&quot;q&quot;] = nil, [&quot;e&quot;] = nil, [&quot;r&quot;] = nil, [&quot;t&quot;] = nil, [&quot;y&quot;] = nil, [&quot;u&quot;] = nil, [&quot;p&quot;] = nil, [&quot;f&quot;] = nil, [&quot;g&quot;] = nil, [&quot;h&quot;] = nil, [&quot;j&quot;] = nil, [&quot;k&quot;] = nil, [&quot;l&quot;] = nil, [&quot;z&quot;] = nil, [&quot;x&quot;] = nil, [&quot;c&quot;] = nil, [&quot;v&quot;] = nil, [&quot;b&quot;] = nil, [&quot;n&quot;] = nil, [&quot;m&quot;] = nil, }
+keybinds = {[&quot;q&quot;] = nil, [&quot;e&quot;] = nil, [&quot;t&quot;] = nil, [&quot;y&quot;] = nil, [&quot;u&quot;] = nil, [&quot;p&quot;] = nil, [&quot;f&quot;] = nil, [&quot;g&quot;] = nil, [&quot;h&quot;] = nil, [&quot;j&quot;] = nil, [&quot;k&quot;] = nil, [&quot;l&quot;] = nil, [&quot;z&quot;] = nil, [&quot;x&quot;] = nil, [&quot;c&quot;] = nil, [&quot;v&quot;] = nil, [&quot;b&quot;] = nil, [&quot;n&quot;] = nil, [&quot;m&quot;] = nil, }
 weapons = {nil, nil, nil, nil, nil, nil, nil, nil, nil, nil}
+currentweapon = 0
 
 Hull = nil								--The player&apos;s collision hull
 Humanoid = nil						--The player&apos;s Humanoid
@@ -182,47 +183,49 @@ Button1Down = nil
 KeyPressed = nil
 MouseCFrame = nil
 MouseTarget = nil
+mousedebounce = false
+
 
 function makeHull(player)							--Give the player a collision hull
-	Container = Instance.new("Model")				--Container model for the Hull
+	Container = Instance.new(&quot;Model&quot;)				--Container model for the Hull
 	Container.Name = player.Name					--Needed for the Player to be able to control the Hull
-	Container.Controller = "Player"
-	Hull = Instance.new("Part", Container)				--BodyHull
+	Container.Controller = &quot;Player&quot;
+	Hull = Instance.new(&quot;Part&quot;, Container)				--BodyHull
 	Hull.Size = Vector3.new(3, 7.2, 3)
-	Hull.BottomSurface = "Smooth"
-	Hull.TopSurface = "Smooth"
+	Hull.BottomSurface = &quot;Smooth&quot;
+	Hull.TopSurface = &quot;Smooth&quot;
 	Hull.Friction = 0
 	Hull.Elasticity = 0
-	bg = Instance.new("BodyGyro", Hull)				--BodyMovers used later on  for moving the Player around
-	bv = Instance.new("BodyVelocity", Hull)
-	movePos = Instance.new("BodyPosition", Hull)
-	movePos.Name = "MovePos"
-	moveVel = Instance.new("BodyVelocity", Hull)
-	moveVel.Name = "MoveVel"
-	Humanoid = Instance.new("Humanoid", Container)
-	canJump = Instance.new("BoolValue", Humanoid)		--BoolValues used when the Player jumps
-	canJump.Name = "canJump"
-	isInAir = Instance.new("BoolValue", Humanoid)
-	isInAir.Name = "isInAir"
-	head = Instance.new("Part", Container)				--The Player's head
+	bg = Instance.new(&quot;BodyGyro&quot;, Hull)				--BodyMovers used later on  for moving the Player around
+	bv = Instance.new(&quot;BodyVelocity&quot;, Hull)
+	movePos = Instance.new(&quot;BodyPosition&quot;, Hull)
+	movePos.Name = &quot;MovePos&quot;
+	moveVel = Instance.new(&quot;BodyVelocity&quot;, Hull)
+	moveVel.Name = &quot;MoveVel&quot;
+	Humanoid = Instance.new(&quot;Humanoid&quot;, Container)
+	canJump = Instance.new(&quot;BoolValue&quot;, Humanoid)		--BoolValues used when the Player jumps
+	canJump.Name = &quot;canJump&quot;
+	isInAir = Instance.new(&quot;BoolValue&quot;, Humanoid)
+	isInAir.Name = &quot;isInAir&quot;
+	head = Instance.new(&quot;Part&quot;, Container)				--The Player&apos;s head
 	head.CFrame = CFrame.new(Hull.CFrame.p)
-	head.Name = "Head"
+	head.Name = &quot;Head&quot;
 	--head.Transparency = 1
 	head.Size = Vector3.new(1, 1.2, 1)
 	head.Elasticity = 0
-	srcGrav = Instance.new("BodyForce", Hull)			--Emulates the gravity of the Source Engine
-	srcGrav.Name = "SrcGrav"
+	srcGrav = Instance.new(&quot;BodyForce&quot;, Hull)			--Emulates the gravity of the Source Engine
+	srcGrav.Name = &quot;SrcGrav&quot;
 	srcGrav.force = Vector3.new(0, 7840.64, 0)
 	Container.Parent = game.Workspace
-	neck = Instance.new("Weld", head)				--Attaches the Head to the BodyHull
+	neck = Instance.new(&quot;Weld&quot;, head)				--Attaches the Head to the BodyHull
 	neck.Part0 = head
 	neck.Part1 = Hull
 	neck.C0 = CFrame.new(0, -2.8, 0)
 	Hull.CFrame = CFrame.new(player.Character.Torso.Position)
 	Humanoid.Health = Humanoid.MaxHealth
-	Hull.Name = "Torso"
+	Hull.Name = &quot;Torso&quot;
 	camera.CameraSubject = Humanoid
-	player.Character = Container						--Replaces the Player's default character with the Hull
+	player.Character = Container						--Replaces the Player&apos;s default character with the Hull
 	Humanoid.Health = Humanoid.MaxHealth
 	HullMade = true
 	Button1Down = player.Backpack.Button1Down
@@ -389,6 +392,9 @@ function init_modules()
 		if string.sub(v.Name, 1, 3) == &quot;ACT&quot; then
 			keybinds[v.KEYBIND.Value] = v
 		end
+		if string.sub(v.Name, 1, 3) == &quot;WEP&quot; then
+			weapons[v.SLOT.Value] = v
+		end
 	end
 end
 
@@ -396,6 +402,25 @@ function onKeyPressed(key)
 	if keybinds[key] ~= nil then
 		keybinds[key].FIRED.Value = true
 		keybinds[key].FIRED.Value = false
+	end
+	if key == &quot;r&quot; and weapons[currentweapon] ~= nil then
+		weapons[currentweapon].RELOAD.Value = true
+		weapons[currentweapon].RELOAD.Value = false
+	end
+	if tonumber(key) ~= nil then
+		currentweapon = tonumber(key)
+		print(&quot;Weapon slot &quot;..tonumber(key))
+	end
+end
+
+function onButton1Down(val)
+	if weapons[currentweapon] ~= nil then
+		weapons[currentweapon].POS.Value = Hull.Parent.Head.CFrame
+		weapons[currentweapon].LOOK.Value = MouseCFrame.Value
+		if val then
+			weapons[currentweapon].FIRED.Value = true
+			weapons[currentweapon].FIRED.Value = false
+		end		
 	end
 end
 
@@ -420,7 +445,8 @@ onPlayerAdded(game.Players.Player)
 init_modules()
 game.Players.PlayerAdded:connect(onPlayerAdded)
 game[&quot;Run Service&quot;].Stepped:connect(onStep)
-KeyPressed.Changed:connect(onKeyPressed)</string>
+KeyPressed.Changed:connect(onKeyPressed)
+Button1Down.Changed:connect(onButton1Down)</string>
 			<bool name="archivable">true</bool>
 		</Properties>
 	</Item>
