@@ -5,6 +5,7 @@ set /p input="rSRC> "
 
 for %%i in (%input%) do (
   IF "%%i"=="map" ( GOTO map )
+  IF "%%i"=="listmaps" ( GOTO listmaps )
   IF "%%i"=="mkmap" ( GOTO mkmap )
   IF "%%i"=="edit" ( GOTO edit )
   IF "%%i"=="connect" ( GOTO connect )
@@ -17,6 +18,8 @@ ECHO help			displays this information
 ECHO.
 ECHO map mapname		starts rSRC and automatically loads the specified map
 ECHO.
+ECHO listmaps		displays all maps in the map directory
+ECHO.
 ECHO mkmap mapname		creates a new, empty map with the specified name
 ECHO.
 ECHO edit mapname		opens a map specifically for editing and automatically 
@@ -24,6 +27,8 @@ ECHO 			loads the rSRC developer toolkit
 ECHO.
 ECHO connect ip port		connects to an rSRC server being hosted at 
 ECHO 			that address on that port 
+ECHO.
+ECHO exit			exits the terminal
 ECHO.
 ECHO.
 GOTO begin
@@ -40,7 +45,11 @@ GOTO begin
 ECHO Starting rSRC...
 RobloxApp.exe -script print("dofile('rbxasset://rSRC_modules/main.lua')") -script print("game:Load('rbxasset://rSRC_maps/%input:~4%.rbxl')") 
 GOTO begin
-)
+
+
+:listmaps
+for %%a in ("content\rSRC_maps\*") do @echo %%~na
+GOTO begin
 
 :mkmap
 ECHO Making map...
